@@ -1,0 +1,49 @@
+name: Terraform CI - Self Hosted Runner
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    name: Terraform Validation and Plan
+    runs-on: [self-hosted, Windows, X64]
+
+    defaults:
+      run:
+        working-directory: terraform
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Check Terraform Version
+        shell: powershell
+        run: |
+          terraform version
+
+      - name: Terraform Format Check
+        shell: powershell
+        run: |
+          terraform fmt -check
+
+      - name: Terraform Init
+        shell: powershell
+        run: |
+          terraform init
+
+      - name: Terraform Validate
+        shell: powershell
+        run: |
+          terraform validate
+
+      - name: Terraform Plan
+        shell: powershell
+        run: |
+          terraform plan
