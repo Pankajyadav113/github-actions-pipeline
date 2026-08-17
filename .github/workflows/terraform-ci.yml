@@ -1,5 +1,7 @@
 name: Terraform CI - Self Hosted Runner
 
+run-name: Terraform CI | ${{ github.ref_name }} | ${{ github.actor }}
+
 on:
   push:
     branches:
@@ -11,7 +13,8 @@ on:
 
 jobs:
   terraform:
-    name: Terraform Validation and Plan
+    name: Terraform Validate and Plan
+
     runs-on: [self-hosted, Windows, X64]
 
     defaults:
@@ -46,4 +49,11 @@ jobs:
       - name: Terraform Plan
         shell: powershell
         run: |
-          terraform plan
+          terraform plan -out=tfplan
+
+      - name: Upload Terraform Plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan
+          path: terraform/tfplan
+          retention-days: 5
