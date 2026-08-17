@@ -1,0 +1,42 @@
+name: Self Hosted Runner Test
+
+on:
+  push:
+
+jobs:
+  test-runner:
+    runs-on: [self-hosted, Windows, X64]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Show Runner Information
+        shell: powershell
+        run: |
+          Write-Host "================================="
+          Write-Host " Self-Hosted Runner Test"
+          Write-Host "================================="
+
+          Write-Host "Computer Name:"
+          hostname
+
+          Write-Host "Current User:"
+          whoami
+
+          Write-Host "Operating System:"
+          Get-CimInstance Win32_OperatingSystem |
+            Select-Object Caption, Version
+
+          Write-Host "PowerShell Version:"
+          $PSVersionTable.PSVersion
+
+          Write-Host "Working Directory:"
+          Get-Location
+
+      - name: Test File Creation
+        shell: powershell
+        run: |
+          New-Item -Path "runner-test.txt" -ItemType File -Force
+          Set-Content -Path "runner-test.txt" -Value "This file was created by my self-hosted runner."
+          Get-Content "runner-test.txt"
